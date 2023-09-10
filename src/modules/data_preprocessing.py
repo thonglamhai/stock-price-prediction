@@ -51,9 +51,12 @@ def clean_data(dataframe):
     clean_data = dataframe.dropna()
 
     # Handle outliers
-    columns = ['open', 'high', 'low', 'close', 'adj close', 'volume']
+    columns = dataframe.columns
     for column in columns:
         handle_outliers(clean_data, column)
+
+    # Change index name to lower case to process easier    
+    dataframe.index.name = dataframe.index.name.lower()
 
     return dataframe
 
@@ -67,8 +70,7 @@ def download_data(symbol):
     # Save the data to CSV file for latter use
     data.to_csv('data/' + symbol + '.csv')
 
-    data = pd.DataFrame(data
-                        )
+    data = pd.DataFrame(data)
     return data
 
 def detect_outliers(dataframe, column):
@@ -109,7 +111,7 @@ def data_scaling(training_set):
 
     return training_set_scaled
 
-def data_windowing(training_set_scaled, window_size=60):
+def convert_series_to_supervised(training_set_scaled, window_size=60):
     '''
     Creating a sliding window
     A special data structure is needed to cover 60-time stamps, based on which RNN will predict the 61st price.
@@ -126,3 +128,7 @@ def data_windowing(training_set_scaled, window_size=60):
         X_train, y_train = np.array(X_train), np.array(y_train)
     
     return X_train, y_train
+
+def preprocess_data(dataframe):
+    dataframe = clean_data(dataframe)
+
