@@ -1,10 +1,11 @@
-
+import pickle 
 # Import tensorflow 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout, Bidirectional
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow import keras
+
 
 def def_lstm_model(units, X_train):
     model  = Sequential()
@@ -34,29 +35,16 @@ def def_lstm_model(units, X_train):
     
     return model
 
-def def_xgboodst_model():
-    model = xgb.XGBRegressor(n_estimators=1000, max_depth=8, learning_rate=0.1, subsample=0.8, colsample_bytree=0.9, random_state=42)
-    return model
+def predict(string):
+    clf = pickle.load('model.pkl')
 
-def def_randomforest_model():
-    model = RandomForestRegressor(n_estimators=1000, max_depth=8, random_state=42)
-    return model
+    df = clean_data(df)
+    df = transform(([review_text]))
+    pred = clf.predict(df)
+    print(pred[0])
+    if pred[0]:
+        prediction = "Positive"
+    else:
+        prediction = "Negative"
+    return prediction
 
-def def_linear_model():
-    model = LinearRegression()
-    return model
-
-def def_svr_model():
-    model = SVR(kernel='rbf', C=1e3, gamma=0.1)
-    return model
-
-def def_knn_model():
-    model = KNeighborsRegressor(n_neighbors=2)
-    return model
-
-def def_lasso_model():
-    model = Lasso(alpha=0.1)
-    return model
-def def_ridge_model():
-    model = Ridge(alpha=0.1)
-    return model
