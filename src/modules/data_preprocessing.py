@@ -95,7 +95,7 @@ def data_scaling(training_set):
 
     return training_set_scaled
 
-def convert_series_to_supervised(training_set_scaled, window_size=60):
+def convert_series_to_supervised(dataset, window_size=60):
     '''
     Creating a sliding window
     A special data structure is needed to cover 60-time stamps, based on which RNN will predict the 61st price.
@@ -106,9 +106,9 @@ def convert_series_to_supervised(training_set_scaled, window_size=60):
     '''
     X_train = []
     y_train = []
-    for i in range(window_size, len(training_set_scaled)):
-        X_train.append(training_set_scaled[i-window_size: i, 0])
-        y_train.append(training_set_scaled[i, 0])
+    for i in range(window_size, len(dataset)):
+        X_train.append(dataset[i-window_size: i, 0])
+        y_train.append(dataset[i, 0])
         X_train, y_train = np.array(X_train), np.array(y_train)
     
     return X_train, y_train
@@ -129,11 +129,17 @@ def scale_data(dataframe, window_size=60):
     X, y = np.array(X), np.array(y)
     return X, y, scaler
 
-def preprocess_data(ticker):
+def preprocess_data_for_prediction(ticker):
+
+    # download data
     dataframe = download_data(ticker)
+
+    # clean data
     dataframe = clean_data(dataframe)
+
+    # scale data
     X, y, scaler = scale_data(dataframe)
-    #X_train, y_train = convert_series_to_supervised(dataframe)
+
     return X, y, scaler
 
 def split_data(dataframe):
@@ -141,8 +147,8 @@ def split_data(dataframe):
     Split the data into training set and test set
     '''
     # Split the data into training set and test set
-    training_set = dataframe.iloc[:int(0.8*len(dataframe)), :]
-    test_set = dataframe.iloc[int(0.8*len(dataframe)) - 60:, :]
+    training_set = dataframe.iloc[:int(np.ceil(0.8*len(dataframe))), :]
+    test_set = dataframe.iloc[int(np.ceil(0.8*len(dataframe))) - 60:, :]
 
     return training_set, test_set
 
@@ -152,40 +158,10 @@ def create_dataset(dataset, window_size=60):
     '''
     dataX, dataY = [], []
 
-    # for i in range(len(dataset)-look_back-1):
-    #     dataX.append(dataset[i:(i+look_back), 0])
-    #     dataY.append(dataset[i + look_back, 0])
-
     for i in range(window_size, len(dataset)):
         dataX.append(dataset[i-window_size:i, 0])
         dataY.append(dataset[i, 0])
-    # for i in range(window_size, len(training_set_scaled)):
-    #     X_train.append(training_set_scaled[i-window_size: i, 0])
-    #     y_train.append(training_set_scaled[i, 0])
-    #     X_train, y_train = np.array(X_train), np.array(y_train)
-    
-    dataX = np.array(dataX)
-    dataY = np.array(dataY)
- 
-    return dataX, dataY
 
-def create_test_dataset(dataset, window_size=60):
-    '''
-    Function to create dataset for LSTM model
-    '''
-    dataX, dataY = [], []
-
-    # for i in range(len(dataset)-look_back-1):
-    #     dataX.append(dataset[i:(i+look_back), 0])
-    #     dataY.append(dataset[i + look_back, 0])
-
-    for i in range(window_size, len(dataset)):
-        dataX.append(dataset[i-window_size:i, 0])
-        dataY.append(dataset[i, 0])
-    # for i in range(window_size, len(training_set_scaled)):
-    #     X_train.append(training_set_scaled[i-window_size: i, 0])
-    #     y_train.append(training_set_scaled[i, 0])
-    #     X_train, y_train = np.array(X_train), np.array(y_train)
     
     dataX = np.array(dataX)
     dataY = np.array(dataY)

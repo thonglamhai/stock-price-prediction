@@ -23,6 +23,8 @@ msft_model = load_model('models/msft_model.h5')
 goog_model = load_model('models/goog_model.h5')
 meta_model = load_model('models/meta_model.h5')
 
+
+
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -39,19 +41,6 @@ def predict():
 
         #get prediction
         X, y, scaler = dp.preprocess_data(ticker)
-
-        # if ticker == "amd":
-        #     prediction = predict(X, y, model_amd, scaler)
-        # elif ticker == "aapl":
-        #     prediction = predict(X, y, model_aapl, scaler)
-        # elif ticker == "goog":
-        #     prediction = predict(X, y, model_goog, scaler)
-        # elif ticker == "msft":
-        #     prediction = predict(X, y, model_msft, scaler)
-        # elif ticker == "meta":
-        #     prediction = predict(X, y, model_meta, scaler)
-        # else:
-        #     prediction = 0
 
         if ticker == "amd":
             prediction = predict(X, y, amd_model, scaler)
