@@ -19,30 +19,7 @@ from collections import deque
 import numpy as np
 import pandas as pd
 
-# def download_data(symbol):
-#     '''
-#     Get the data from yahoo finance.
-#     '''
-#     # Get data of the symbol within 10 recent years.
-#     data = yf.download(symbol, period="10y")
 
-#     # Change column names to lower case to process easier
-#     data.columns = data.columns.str.lower()
-
-#     # Get the date of data points into a list
-#     data_date = data.index.strftime('%Y-%m-%d').tolist()
-
-#     # Get the adjusted price in each data points 
-#     data_feature = data["adj close"]
-#     data_feature = np.array(data_feature)
-    
-#     # Get the number of data points
-#     num_data_points = len(data_date)
-
-#     display_date_range = "from " + data_date[0] + " to " + data_date[num_data_points-1]
-#     print("Number data points:", num_data_points, display_date_range)
-
-#     return data_date, data_feature, num_data_points, display_date_range
 def clean_data(dataframe):
 
     # Drop the columns that are not needed
@@ -50,6 +27,7 @@ def clean_data(dataframe):
 
     # Handle outliers
     columns = dataframe.columns
+
     for column in columns:
         handle_outliers(clean_data, column)
 
@@ -69,9 +47,11 @@ def download_data(symbol):
     data = yf.download(symbol, period="10y")
 
     # Save the data to CSV file for latter use
-    data.to_csv('data/' + symbol + '.csv')
+    # data.to_csv('data/' + symbol + '.csv')
 
+    # Convert the data to dataframe
     data = pd.DataFrame(data)
+
     return data
 
 def detect_outliers(dataframe, column):
@@ -153,3 +133,12 @@ def preprocess_data(ticker):
     #X_train, y_train = convert_series_to_supervised(dataframe)
     return X, y, scaler
 
+def split_data(dataframe):
+    '''
+    Split the data into training set and test set
+    '''
+    # Split the data into training set and test set
+    training_set = dataframe.iloc[:int(0.8*len(dataframe)), :]
+    test_set = dataframe.iloc[int(0.8*len(dataframe)):, :]
+
+    return training_set, test_set
