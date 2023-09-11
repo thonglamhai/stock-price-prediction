@@ -13,6 +13,9 @@ app = Flask(__name__)
 #model = pickle.load(open('model.pkl','rb')) #read mode
 model_amd = load_model('model_amd.h5')
 model_aapl = load_model('model_aapl.h5')
+model_msft = load_model('model_msft.h5')
+model_goog = load_model('model_goog.h5')
+model_meta = load_model('model_meta.h5')
 
 @app.route("/")
 def index():
@@ -35,8 +38,14 @@ def predict():
             prediction = predict(X, y, model_amd, scaler)
         elif ticker == "aapl":
             prediction = predict(X, y, model_aapl, scaler)
+        elif ticker == "goog":
+            prediction = predict(X, y, model_goog, scaler)
+        elif ticker == "msft":
+            prediction = predict(X, y, model_msft, scaler)
+        elif ticker == "meta":
+            prediction = predict(X, y, model_meta, scaler)
         else:
-            prediction = 50
+            prediction = 0
         
         return render_template("index.html", prediction_text='Your predicted stock prices in next 5 days are $ {}'.format(prediction))
 
