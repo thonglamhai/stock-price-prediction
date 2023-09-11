@@ -44,8 +44,6 @@ import pandas as pd
 
 #     return data_date, data_feature, num_data_points, display_date_range
 def clean_data(dataframe):
-    # Change column names to lower case to process easier
-    dataframe.columns = dataframe.columns.str.lower()
 
     # Drop the columns that are not needed
     clean_data = dataframe.dropna()
@@ -54,6 +52,9 @@ def clean_data(dataframe):
     columns = dataframe.columns
     for column in columns:
         handle_outliers(clean_data, column)
+
+    # Change column names to lower case to process easier
+    dataframe.columns = dataframe.columns.str.lower()
 
     # Change index name to lower case to process easier    
     dataframe.index.name = dataframe.index.name.lower()
@@ -129,6 +130,26 @@ def convert_series_to_supervised(training_set_scaled, window_size=60):
     
     return X_train, y_train
 
-def preprocess_data(dataframe):
+def scale_data(dataframe, window_size=60):
+    # prepare data for forecasting
+    dataset = dataframe[['adj close']]
+
+    scaler = MinMaxScaler(feature_range = (0, 1))
+    scaled_data = scaler.fit_transform(dataset)
+
+    X, y = [], []
+
+    for i in range(window_size, len(scaled_data)):
+        X.append(scaled_data[i - window_size: i])
+        y.append(scaled_data[i])
+
+    X, y = np.array(X), np.array(y)
+    return X, y, scaler
+
+def preprocess_data(ticker):
+    dataframe = download_data(ticker)
     dataframe = clean_data(dataframe)
+    X, y, scaler = scale_data(dataframe)
+    #X_train, y_train = convert_series_to_supervised(dataframe)
+    return X, y, scaler
 
