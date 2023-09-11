@@ -35,16 +35,21 @@ def def_lstm_model(units, X_train):
     
     return model
 
-def predict(string):
-    clf = pickle.load('model.pkl')
+def create_model(X_train, y_train):
 
-    df = clean_data(df)
-    df = transform(([review_text]))
-    pred = clf.predict(df)
-    print(pred[0])
-    if pred[0]:
-        prediction = "Positive"
-    else:
-        prediction = "Negative"
-    return prediction
+    # Initialize the model
+    model = Sequential()
+    model.add(LSTM(128, return_sequences=True, input_shape=(X_train.shape[1], 1)))
+    model.add(Dropout(0.2))
+    model.add(LSTM(64, return_sequences=True))
+    model.add(Dropout(0.2))
+    model.add(LSTM(32, return_sequences=False))
+    model.add(Dense(25))
+    model.add(Dense(1))
 
+    # Compile the model
+    model.compile(optimizer=tf.keras.optimizers.Adam(),
+                loss=tf.keras.losses.MeanSquaredError(),
+                metrics=[tf.keras.metrics.RootMeanSquaredError()])
+    
+    return model

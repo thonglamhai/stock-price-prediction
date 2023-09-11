@@ -11,11 +11,17 @@ import numpy as np
 app = Flask(__name__)
 #model_amd = pickle.load(open('model_amd.pkl','rb')) #read mode
 #model = pickle.load(open('model.pkl','rb')) #read mode
-model_amd = load_model('model_amd.h5')
-model_aapl = load_model('model_aapl.h5')
-model_msft = load_model('model_msft.h5')
-model_goog = load_model('model_goog.h5')
-model_meta = load_model('model_meta.h5')
+# amd_model = load_model('model_amd.h5')
+# aapl_model = load_model('model_aapl.h5')
+# msft_model = load_model('model_msft.h5')
+# goog_model = load_model('model_goog.h5')
+# meta_model = load_model('model_meta.h5')
+
+amd_model = load_model('models/amd_model.h5')
+aapl_model = load_model('models/aapl_model.h5')
+msft_model = load_model('models/msft_model.h5')
+goog_model = load_model('models/goog_model.h5')
+meta_model = load_model('models/meta_model.h5')
 
 @app.route("/")
 def index():
@@ -34,16 +40,29 @@ def predict():
         #get prediction
         X, y, scaler = dp.preprocess_data(ticker)
 
+        # if ticker == "amd":
+        #     prediction = predict(X, y, model_amd, scaler)
+        # elif ticker == "aapl":
+        #     prediction = predict(X, y, model_aapl, scaler)
+        # elif ticker == "goog":
+        #     prediction = predict(X, y, model_goog, scaler)
+        # elif ticker == "msft":
+        #     prediction = predict(X, y, model_msft, scaler)
+        # elif ticker == "meta":
+        #     prediction = predict(X, y, model_meta, scaler)
+        # else:
+        #     prediction = 0
+
         if ticker == "amd":
-            prediction = predict(X, y, model_amd, scaler)
+            prediction = predict(X, y, amd_model, scaler)
         elif ticker == "aapl":
-            prediction = predict(X, y, model_aapl, scaler)
+            prediction = predict(X, y, aapl_model, scaler)
         elif ticker == "goog":
-            prediction = predict(X, y, model_goog, scaler)
+            prediction = predict(X, y, goog_model, scaler)
         elif ticker == "msft":
-            prediction = predict(X, y, model_msft, scaler)
+            prediction = predict(X, y, msft_model, scaler)
         elif ticker == "meta":
-            prediction = predict(X, y, model_meta, scaler)
+            prediction = predict(X, y, meta_model, scaler)
         else:
             prediction = 0
         

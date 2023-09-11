@@ -37,6 +37,9 @@ def clean_data(dataframe):
     # Change index name to lower case to process easier    
     dataframe.index.name = dataframe.index.name.lower()
 
+    # Get the column 'adj close' as feature
+    dataframe = dataframe.iloc[:, 4:5]
+
     return dataframe
 
 def download_data(symbol):
@@ -139,6 +142,52 @@ def split_data(dataframe):
     '''
     # Split the data into training set and test set
     training_set = dataframe.iloc[:int(0.8*len(dataframe)), :]
-    test_set = dataframe.iloc[int(0.8*len(dataframe)):, :]
+    test_set = dataframe.iloc[int(0.8*len(dataframe)) - 60:, :]
 
     return training_set, test_set
+
+def create_dataset(dataset, window_size=60):
+    '''
+    Function to create dataset for LSTM model
+    '''
+    dataX, dataY = [], []
+
+    # for i in range(len(dataset)-look_back-1):
+    #     dataX.append(dataset[i:(i+look_back), 0])
+    #     dataY.append(dataset[i + look_back, 0])
+
+    for i in range(window_size, len(dataset)):
+        dataX.append(dataset[i-window_size:i, 0])
+        dataY.append(dataset[i, 0])
+    # for i in range(window_size, len(training_set_scaled)):
+    #     X_train.append(training_set_scaled[i-window_size: i, 0])
+    #     y_train.append(training_set_scaled[i, 0])
+    #     X_train, y_train = np.array(X_train), np.array(y_train)
+    
+    dataX = np.array(dataX)
+    dataY = np.array(dataY)
+ 
+    return dataX, dataY
+
+def create_test_dataset(dataset, window_size=60):
+    '''
+    Function to create dataset for LSTM model
+    '''
+    dataX, dataY = [], []
+
+    # for i in range(len(dataset)-look_back-1):
+    #     dataX.append(dataset[i:(i+look_back), 0])
+    #     dataY.append(dataset[i + look_back, 0])
+
+    for i in range(window_size, len(dataset)):
+        dataX.append(dataset[i-window_size:i, 0])
+        dataY.append(dataset[i, 0])
+    # for i in range(window_size, len(training_set_scaled)):
+    #     X_train.append(training_set_scaled[i-window_size: i, 0])
+    #     y_train.append(training_set_scaled[i, 0])
+    #     X_train, y_train = np.array(X_train), np.array(y_train)
+    
+    dataX = np.array(dataX)
+    dataY = np.array(dataY)
+ 
+    return dataX, dataY
