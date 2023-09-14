@@ -4,8 +4,10 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 
 
-def create_model(X_train, y_train):
-
+def create_model(X_train):
+    '''
+    Function to create the model
+    '''
     # Initialize the model
     model = Sequential()
     model.add(LSTM(128, return_sequences=True, input_shape=(X_train.shape[1], 1)))

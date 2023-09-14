@@ -1,19 +1,8 @@
-# Import tensorflow 
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout, Bidirectional
-from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
-from tensorflow import keras
-
 # Import sklearn
-from sklearn import preprocessing
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
-# 
+# Import yfinance to load the data
 import yfinance as yf
-from collections import deque
-
 
 # import 
 import numpy as np
@@ -21,7 +10,9 @@ import pandas as pd
 
 
 def clean_data(dataframe):
-
+    '''
+    Function to clean the data
+    '''
     # Drop the columns that are not needed
     clean_data = dataframe.dropna()
 
@@ -44,7 +35,7 @@ def clean_data(dataframe):
 
 def download_data(symbol):
     '''
-    Get the data from yahoo finance.
+    Funciton to get the data from yahoo finance.
     '''
     # Get data of the symbol within 10 recent years.
     data = yf.download(symbol, period="10y")
@@ -114,6 +105,9 @@ def convert_series_to_supervised(dataset, window_size=60):
     return X_train, y_train
 
 def scale_data(dataframe, window_size=60):
+    '''
+    Function to scale the data using MinMaxScaler(0,1)
+    '''
     # prepare data for forecasting
     dataset = dataframe[['adj close']]
 
@@ -130,7 +124,9 @@ def scale_data(dataframe, window_size=60):
     return X, y, scaler
 
 def preprocess_data_for_prediction(ticker):
-
+    '''
+    Function to preprocess the data for prediction
+    '''
     # download data
     dataframe = download_data(ticker)
 
